@@ -1,23 +1,29 @@
 <script setup lang="ts">
-const props = defineProps<{
-    data: { title: string; done: boolean; id: number };
-}>();
+import { ref } from "vue";
 
+const props = defineProps(["index"]);
 const doneModel = defineModel<boolean>("done");
+const titleModel = defineModel<string>("title");
+
+const updateContent = (e: Event) => {
+    const target = e.target as HTMLElement;
+    titleModel.value = target.innerText;
+};
 </script>
 
 <template>
-    <div :class="['card', { done: props.data.done }]">
+    <div :class="['card', { done: done }]">
         <div>
-            <div class="id">id: {{ props.data.id }}</div>
-            <div>title: {{ props.data.title }}</div>
-            <div>done: {{ props.data.done }}</div>
+            <div class="id">nr: {{ props.index }}</div>
+            <div contenteditable @input="updateContent" v-once>
+                {{ titleModel }}
+            </div>
         </div>
         <div class="checkbox">
             <input type="checkbox" v-model="doneModel" />
         </div>
         <div class="slot">
-            <slot :id="props.data.id" />
+            <slot :index="props.index" />
         </div>
     </div>
 </template>
