@@ -1,29 +1,26 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useTodosStore } from "@/stores/todos";
 
-const props = defineProps(["index"]);
-const doneModel = defineModel<boolean>("done");
-const titleModel = defineModel<string>("title");
-
-const updateContent = (e: Event) => {
-    const target = e.target as HTMLElement;
-    titleModel.value = target.innerText;
-};
+const todos = useTodosStore();
+const { index, readonly = false } = defineProps(["index", "readonly"]);
 </script>
 
 <template>
     <div :class="['card', { done: done }]">
         <div>
-            <div class="id">nr: {{ props.index }}</div>
-            <div contenteditable @input="updateContent" v-once>
-                {{ titleModel }}
+            <div class="id">nr: {{ index }}</div>
+            <input v-model="todos.items[index].title" />
+        </div>
+        <div v-if="!readonly" class="checkbox">
+            <input type="checkbox" v-model="todos.items[index].done" />
+        </div>
+        <div v-if="!readonly" class="removeIcon">
+            <div
+                style="cursor: pointer; transform: scale(1.5)"
+                @click="todos.removeTodo(index)"
+            >
+                ✕
             </div>
-        </div>
-        <div class="checkbox">
-            <input type="checkbox" v-model="doneModel" />
-        </div>
-        <div class="slot">
-            <slot :index="props.index" />
         </div>
     </div>
 </template>
@@ -44,7 +41,7 @@ const updateContent = (e: Event) => {
     }
 
     .checkbox,
-    .slot {
+    .removeIcon {
         display: flex;
         align-items: center;
         margin: 0 8px 0 16px;

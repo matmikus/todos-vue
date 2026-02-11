@@ -3,7 +3,11 @@ import TodoList from "./components/TodoList.vue";
 </script>
 
 <template>
-    <TodoList />
+    <nav>
+        <RouterLink to="/">All</RouterLink> |
+        <RouterLink to="/completed">Completed</RouterLink>
+    </nav>
+    <RouterView />
 </template>
 
 <style>

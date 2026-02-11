@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { watch } from "vue";
+import { watch, computed } from "vue";
 import { useTodosStore } from "@/stores/todos";
 import TodoItem from "./TodoItem.vue";
 
 const todos = useTodosStore();
+const completedTodos = computed(() => {
+    return todos.items.filter((el) => el.done);
+});
 
 watch(
     () => todos.items.length,
@@ -18,17 +21,14 @@ watch(
 <template>
     <div>
         <div class="header">
-            <div>TODOS</div>
-            <div class="button" @click="todos.addTodo">+</div>
-            <div>
-                {{ todos.completedTodosCount }} / {{ todos.items.length }}
-            </div>
+            <div>COMPLETED TODOS</div>
         </div>
         <div class="items">
             <TodoItem
-                v-for="(item, index) in todos.items"
+                v-for="(item, index) in completedTodos"
                 :key="index"
                 :index="index"
+                :readonly="true"
             />
         </div>
     </div>
